@@ -6,10 +6,44 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Company {
+  id String @id @default(uuid())
+  name String
+  description String?
+  email String @unique
+  CNPJ String @unique
+  verification Boolean @default(false)
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  otps OTP[] 
+  //faqs
+  //interacoes
+}
+
+model OTP { //Email verification
+  id String @id @default(uuid())
+  code String
+  userId String
+  expiredAt DateTime
+  used Boolean @default(false)
+
+  company Company @relation(fields: [userId], references: [id])
+}
+/*
+model FAQs {
+
+}
+
+model Interaction {
+
+}
+
+}
+*/
