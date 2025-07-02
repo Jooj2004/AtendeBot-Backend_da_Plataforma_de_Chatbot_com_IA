@@ -2,7 +2,7 @@ import express from 'express'
 import helmet from 'helmet'
 import cors from 'cors'
 import path from 'path'
-import mainRouter from './routes'
+import mainRouter from './routes/main' 
 
 const port = process.env.PORT as string | 4000
 const server = express()
