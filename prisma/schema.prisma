@@ -14,27 +14,30 @@ datasource db {
 }
 
 model Company {
-  id String @id @default(uuid())
-  name String
-  description String?
-  email String @unique
-  CNPJ String @unique
-  verification Boolean @default(false)
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+  id            String     @id @default(uuid())
+
+  name          String
+  description   String?
+  email         String     @unique
+  CNPJ          String     @unique
+  password      String 
+
+  verification  Boolean    @default(false)
+  createAt      DateTime   @default(now())
+  updateAt      DateTime   @updatedAt
   otps OTP[] 
   //faqs
   //interacoes
 }
 
-model OTP { //Email verification
-  id String @id @default(uuid())
-  code String
-  userId String
+model OTP {
+  id        String    @id @default(uuid())
+  code      String
+  companyId String
   expiredAt DateTime
-  used Boolean @default(false)
+  used      Boolean   @default(false)
 
-  company Company @relation(fields: [userId], references: [id])
+  company   Company   @relation(fields: [companyId], references: [id])
 }
 /*
 model FAQs {
