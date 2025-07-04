@@ -25,8 +25,11 @@ model Company {
   verification  Boolean    @default(false)
   createAt      DateTime   @default(now())
   updateAt      DateTime   @updatedAt
-  otps OTP[] 
-  //faqs
+
+  otps          OTP[] 
+
+  faqs FAQ[]
+
   //interacoes
 }
 
@@ -39,11 +42,19 @@ model OTP {
 
   company   Company   @relation(fields: [companyId], references: [id])
 }
-/*
-model FAQs {
 
+model FAQ {
+  id            Int        @id @default(autoincrement())
+  question      String
+  answer        String
+  companyId     String
+  createAt      DateTime   @default(now())
+  updateAt      DateTime   @updatedAt
+
+  company       Company    @relation(fields: [companyId], references: [id])
 }
 
+/*
 model Interaction {
 
 }

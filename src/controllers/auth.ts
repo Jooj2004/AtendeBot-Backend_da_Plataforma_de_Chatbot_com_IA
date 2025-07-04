@@ -1,13 +1,13 @@
 import { RequestHandler } from "express";
-import {signinSchema} from '../schema/signin'
-import {signupSchema} from "../schema/signup";
-import { useOTPSchema } from "../schema/useOTP";
+import {signinSchema} from '../schema/auth/signin'
+import {signupSchema} from "../schema/auth/signup";
+import { useOTPSchema } from "../schema/auth/useOTP";
 import { createCompany, getCompanyByEmail, getCompanyById, updatePassword } from "../services/company";
 import { createOTP, validateOTP } from "../services/otp";
 import { sendEmail } from "../libs/nodemailer";
 import { createJWT } from "../libs/jwt";
 import bcrypt from "bcryptjs";
-import { editPasswordSchema } from "../schema/editPassword";
+import { editPasswordSchema } from "../schema/auth/editPassword";
 
 export const signup:RequestHandler = async (req, res) => {
     const data = signupSchema.safeParse(req.body)
