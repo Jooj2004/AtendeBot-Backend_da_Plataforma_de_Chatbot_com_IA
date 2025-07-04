@@ -2,11 +2,12 @@ import { RequestHandler } from "express";
 import {signinSchema} from '../schema/signin'
 import {signupSchema} from "../schema/signup";
 import { useOTPSchema } from "../schema/useOTP";
-import { createCompany, getCompanyByEmail, getCompanyById } from "../services/company";
+import { createCompany, getCompanyByEmail, getCompanyById, updatePassword } from "../services/company";
 import { createOTP, validateOTP } from "../services/otp";
 import { sendEmail } from "../libs/nodemailer";
 import { createJWT } from "../libs/jwt";
 import bcrypt from "bcryptjs";
+import { editPasswordSchema } from "../schema/editPassword";
 
 export const signup:RequestHandler = async (req, res) => {
     const data = signupSchema.safeParse(req.body)
@@ -51,21 +52,6 @@ export const signin:RequestHandler = async (req, res) => {
     const token = createJWT(company.id, company.verification)
 
     res.json({token, company})
-
-    //res.json({companyId: company.id})
-
-
-    /*
-    const otp = await createOTP(company.id)  
-
-    await sendEmail(
-        company.email,
-        'Seu códigode acesso é: ' + otp.code,
-        otp.code
-    )
-
-    res.json({idOTP : otp.id})
-    */
 }
 
 export const verifyEmail:RequestHandler = async (req, res) => {
@@ -99,7 +85,7 @@ export const useOTP:RequestHandler = async (req, res) => {
         return
     }
 
-    const company = await validateOTP(data.data.id, data.data.code)
+    let company = await validateOTP(data.data.id, data.data.code)
     if(!company){
         res.json({error: "OTP inválido ou expirado!"})
         return
@@ -111,4 +97,40 @@ export const useOTP:RequestHandler = async (req, res) => {
 
     res.json({token, company})
 
- }
+}
+
+export const editPassword:RequestHandler = async (req, res) => {
+    const data = editPasswordSchema.safeParse(req.body)
+    if(!data.success){
+        res.json({error: data.error.flatten().fieldErrors})
+        return
+    }
+
+    const company = await getCompanyById(data.data.id) 
+    if(!company){
+        res.json({error: "Empresa não existe"}) 
+        return 
+    }
+
+    const verifyPass = await bcrypt.compare(data.data.actualPass, company.password)
+    if(!verifyPass){
+        res.json({error: "A senha digitada não está correta"})
+        return
+    }
+
+    const verifyNewPass = await bcrypt.compare(data.data.newPass, company.password)
+    if(verifyNewPass){
+        res.json({error: "A nova senha é a mesma atual"})
+        return
+    }
+
+    const hash = await bcrypt.hash(data.data.newPass, 10)
+
+    const update = await updatePassword(data.data.id, hash)
+    if(!update){
+        res.json({error: "A senha não foi atualizada, tente novamente mais tarde"})
+        return
+    }
+
+    res.json({sucess: true, company: update})
+}

@@ -22,3 +22,15 @@ export const createCompany = async (name:string, email:string, CNPJ:string, pass
     })
     return company
 }
+
+export const updatePassword = async(id:string, hash:string) => {
+    const company = await prisma.company.update({
+        where:{
+            id
+        },
+        data:{
+            password: hash
+        }
+    })
+    return company
+}

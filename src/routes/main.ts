@@ -15,8 +15,9 @@ mainRouter.post('/auth/signup', authController.signup)
 mainRouter.post('/auth/signin', authController.signin)
 
 mainRouter.post('/auth/verification', authController.verifyEmail)
-
 mainRouter.post('/auth/useotp', authController.useOTP)
+
+mainRouter.put('/auth/password', verifyJWT, verifyEmail, authController.editPassword)
 
 
 export default mainRouter
