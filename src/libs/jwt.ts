@@ -2,8 +2,8 @@ import { NextFunction,Response } from 'express'
 import { ExtendedRequest } from '../types/extended-request'
 import jwt from 'jsonwebtoken'
 
-export const createJWT = (id: string) => {
-    return jwt.sign({id}, process.env.JWT_TOKEN as string)
+export const createJWT = (id: string, verify: boolean) => {
+    return jwt.sign({id, verify}, process.env.JWT_TOKEN as string)
 }
 
 export const verifyJWT = (req:ExtendedRequest, res:Response, next:NextFunction) => {
@@ -24,7 +24,8 @@ export const verifyJWT = (req:ExtendedRequest, res:Response, next:NextFunction) 
                 return
             }
 
-            req.companyId = decoded.id 
+            req.companyId = decoded.id
+            req.verify = decoded.verify
             next()
         }
     )

@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import {signinSchema} from '../schema/signin'
 import {signupSchema} from "../schema/signup";
 import { useOTPSchema } from "../schema/useOTP";
-import { createCompany, getCompanyByEmail } from "../services/company";
+import { createCompany, getCompanyByEmail, getCompanyById } from "../services/company";
 import { createOTP, validateOTP } from "../services/otp";
 import { sendEmail } from "../libs/nodemailer";
 import { createJWT } from "../libs/jwt";
@@ -26,7 +26,7 @@ export const signup:RequestHandler = async (req, res) => {
     const {email,name,description,CNPJ} = data.data 
     const newCompany = await createCompany(name, email, CNPJ, hash, description)
 
-    res.status(201).json({sucess: true, company : newCompany}) 
+    res.status(201).json({sucess: true})
 }
 
 export const signin:RequestHandler = async (req, res) => {
@@ -45,6 +45,39 @@ export const signin:RequestHandler = async (req, res) => {
     const verifyPass = await bcrypt.compare(data.data.password, company.password)
     if(!verifyPass){
         res.json({error: "A senha digitada não está correta"})
+        return
+    }
+
+    const token = createJWT(company.id, company.verification)
+
+    res.json({token, company})
+
+    //res.json({companyId: company.id})
+
+
+    /*
+    const otp = await createOTP(company.id)  
+
+    await sendEmail(
+        company.email,
+        'Seu códigode acesso é: ' + otp.code,
+        otp.code
+    )
+
+    res.json({idOTP : otp.id})
+    */
+}
+
+export const verifyEmail:RequestHandler = async (req, res) => {
+    const {companyId} = req.body 
+
+    const company = await getCompanyById(companyId)
+    if(!company){
+        res.json({error: "Empresa não existe"}) 
+        return 
+    }
+    if(company.verification){
+        res.json({verify: true})
         return
     }
 
@@ -72,7 +105,8 @@ export const useOTP:RequestHandler = async (req, res) => {
         return
     }
 
-    const token = createJWT(company.id)
+    const token = createJWT(company.id, company.verification)
 
     res.json({token, company})
+
  }

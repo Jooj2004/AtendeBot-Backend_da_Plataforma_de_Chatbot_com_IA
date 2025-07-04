@@ -38,14 +38,19 @@ export const validateOTP = async (id: string, code: string) => {
     })
 
     if(otp && otp.company){
-        await prisma.oTP.update({
+        await prisma.oTP.delete({
+            where:{id}
+        })
+
+        await prisma.company.update({
             where:{
-                id
+                id: otp.company.id
             },
             data:{
-                used: true
+                verification: true
             }
         })
+
         return otp.company
     }
 
