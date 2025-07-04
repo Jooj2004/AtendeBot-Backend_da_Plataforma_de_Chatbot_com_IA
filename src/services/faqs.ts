@@ -1,5 +1,5 @@
+import { Prisma } from '@prisma/client'
 import { prisma } from '../libs/prisma'
-import { FaqType } from '../types/faq-type'
 
 export const createFaq = async (question: string, answer: string, companyId: string) => {
     const faq = await prisma.fAQ.create({
@@ -39,7 +39,7 @@ export const getFaqById = async (companyId: string, id: number) => {
     return faq
 }
 
-export const updateFaq = async (companyId: string, id: number, data:FaqType) => {
+export const updateFaq = async (companyId: string, id: number, data:Prisma.FAQUpdateInput) => {
     try{
         const faq = await prisma.fAQ.update({
             where:{

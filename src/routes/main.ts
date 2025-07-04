@@ -3,6 +3,7 @@ import * as pingController from '../controllers/ping'
 import * as authController from '../controllers/auth'
 import * as privateController from '../controllers/private'
 import * as faqsController from '../controllers/faqs'
+import * as companyController from '../controllers/company'
 import { verifyJWT } from '../libs/jwt'
 import { verifyEmail } from '../middlewares/verifyEmail'
 
@@ -25,6 +26,10 @@ mainRouter.get('/faq/list', verifyJWT, verifyEmail, faqsController.list)
 mainRouter.get('/faq/list/:id', verifyJWT, verifyEmail, faqsController.faq)
 mainRouter.put('/faq/edit', verifyJWT, verifyEmail, faqsController.edit)
 mainRouter.delete('/faq/delete/:id', verifyJWT, verifyEmail, faqsController.deleteFaqCon)
+
+mainRouter.put('/company/edit', verifyJWT, verifyEmail, companyController.edit)
+mainRouter.put('/company/email', verifyJWT, verifyEmail, companyController.updateEmailCon)
+mainRouter.delete('/company/delete', verifyJWT, verifyEmail, companyController.deleteAll)
 
 
 export default mainRouter
