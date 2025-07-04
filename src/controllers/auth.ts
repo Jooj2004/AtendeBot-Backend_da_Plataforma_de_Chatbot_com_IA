@@ -105,6 +105,8 @@ export const useOTP:RequestHandler = async (req, res) => {
         return
     }
 
+    company.verification = true
+
     const token = createJWT(company.id, company.verification)
 
     res.json({token, company})
