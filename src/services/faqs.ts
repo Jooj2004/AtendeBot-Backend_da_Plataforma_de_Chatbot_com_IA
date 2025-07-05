@@ -26,7 +26,7 @@ export const getAllFaqs = async (companyId: string) => {
     return list
 }
 
-export const getFaqById = async (companyId: string, id: number) => {
+export const getFaqById = async (companyId: string, id: string) => {
     const faq = await prisma.fAQ.findUnique({
         select: {
             question: true,
@@ -39,7 +39,7 @@ export const getFaqById = async (companyId: string, id: number) => {
     return faq
 }
 
-export const updateFaq = async (companyId: string, id: number, data:Prisma.FAQUpdateInput) => {
+export const updateFaq = async (companyId: string, id: string, data:Prisma.FAQUpdateInput) => {
     try{
         const faq = await prisma.fAQ.update({
             where:{
@@ -54,7 +54,7 @@ export const updateFaq = async (companyId: string, id: number, data:Prisma.FAQUp
     }
 }
 
-export const deleteFaq = async (id:number, companyId: string) => {
+export const deleteFaq = async (id:string, companyId: string) => {
     try{
         return await prisma.fAQ.delete({
             where: {

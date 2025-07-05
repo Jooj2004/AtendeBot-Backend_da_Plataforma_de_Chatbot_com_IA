@@ -30,7 +30,7 @@ export const faq = async (req: ExtendedRequest, res: Response) => {
     const companyId = req.companyId as string
     const {id} = req.params
 
-    const faq = await getFaqById(companyId, Number(id))
+    const faq = await getFaqById(companyId, String(id))
     if(!faq){
         res.json({error: "Faq não encontrado"})
         return
@@ -65,7 +65,7 @@ export const deleteFaqCon = async (req: ExtendedRequest, res: Response) => {
     const companyId = req.companyId as string
     const {id} = req.params
 
-    const del = await deleteFaq(Number(id), companyId)
+    const del = await deleteFaq(String(id), companyId)
     if(!del){
         res.json({error: "Não foi possível deletar"})
         return
