@@ -30,7 +30,7 @@ model Company {
 
   faqs FAQ[]
 
-  //interacoes
+  inter Interaction[]
 }
 
 model OTP {
@@ -54,10 +54,12 @@ model FAQ {
   company       Company    @relation(fields: [companyId], references: [id])
 }
 
-/*
 model Interaction {
+  id        String    @id @default(uuid())
+  question  String
+  botAnswer String
+  companyId String
+  createAt  DateTime  @default(now())
 
+  company   Company   @relation(fields: [companyId], references: [id])
 }
-
-}
-*/
