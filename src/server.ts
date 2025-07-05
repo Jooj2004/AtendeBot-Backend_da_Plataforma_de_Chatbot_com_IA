@@ -3,7 +3,7 @@ import helmet from 'helmet'
 import cors from 'cors'
 import path from 'path'
 import mainRouter from './routes/main' 
-import chatRouter from './routes/chatbot-routes'
+import chatRouter from './routes/chatbot-public-routes'
 
 const port = process.env.PORT as string | 4000
 const server = express()
