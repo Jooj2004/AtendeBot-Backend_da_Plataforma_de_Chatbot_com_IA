@@ -1,7 +1,6 @@
 import { RequestHandler } from "express";
 import { validateQuestion } from "../schema/chatbot/question";
 import { getCompanyById } from "../services/company";
-import { getAllFaqs } from "../services/faqs";
 import { createChatContext, createInteractionServ } from "../services/chatbot";
 
 export const createInteraction:RequestHandler = async (req, res) => {
@@ -23,9 +22,7 @@ export const createInteraction:RequestHandler = async (req, res) => {
         return
     }
 
-    const allFaqsFromTheCompany = await getAllFaqs(company.id)
-
-    const checkQuestionOnFaqs = allFaqsFromTheCompany.find( faq => (
+    const checkQuestionOnFaqs = company.faqs.find( faq => (
         faq.question.toLowerCase().trim() === data.data.question.toLowerCase().trim() 
     ))
 
@@ -41,8 +38,12 @@ export const createInteraction:RequestHandler = async (req, res) => {
         res.json({answer: answer})
         return
     }
-    
-    const context = createChatContext()
+
+    const context = await createChatContext(company.name, company.email, company.faqs, company.description)
+    if(!context){
+        res.json({error: "Não foi possível gerar o prompt, tente novamente mais tarde"})
+        return
+    }
 
 // 8. Send the context and question to OpenAI (GPT) to get an answer
 
