@@ -69,11 +69,15 @@ export const verifyEmail:RequestHandler = async (req, res) => {
 
     const otp = await createOTP(company.id)  
 
-    await sendEmail(
+    const email = await sendEmail(
         company.email,
         'Seu códigode acesso é: ' + otp.code,
         otp.code
     )
+    if(!email){
+        res.json({error: "Erro ao enviar e-mail. Tente novamente mais tarde"})
+        return
+    }
 
     res.json({idOTP : otp.id})
 }

@@ -29,15 +29,18 @@ function isValidCNPJ(cnpj: string): boolean {
 export const signupSchema = z.object({
     name: z
         .string({message: "É necessário ter um nome"})
-        .min(2, "Mínimo dois caracteres"),
+        .min(2, "Mínimo dois caracteres")
+        .max(100, "Máximo 100 caracteres"),
 
     description: z
         .string()
+        .max(400, "Máximo 400 caracteres")
         .optional(),
 
     email: z
         .string({message: "É necessário ter um e-mail"})
-        .email("E-mail inválido"),
+        .email("E-mail inválido")
+        .max(100,"E-mail muito longo"),
 
     CNPJ: z
         .string({message: "É necessário ter um CNPJ"})
@@ -48,6 +51,7 @@ export const signupSchema = z.object({
     password: z
         .string({ message: "Senha obrigatória" })
         .min(8, "A senha deve ter no mínimo 8 caracteres")
+        .max(100, "A senha deve ter no máximo 100 caracteres")
         .refine((val) => /[a-z]/.test(val), {
           message: "A senha deve conter pelo menos uma letra minúscula",
         })

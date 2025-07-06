@@ -3,14 +3,22 @@ import { prisma } from "../libs/prisma"
 
 export const getCompanyByEmail = async (email:string) => {
     const company = await prisma.company.findUnique({
-        where:{ email }
+        where:{ email },
+        include: {
+            faqs:true,
+             inter: true
+        }
     })
     return company 
 }
 
 export const getCompanyById = async (id:string) => {
     const company = await prisma.company.findUnique({
-        where:{ id }
+        where:{ id },
+        include: {
+            faqs:true,
+            inter: true
+        }
     })
     return company 
 }

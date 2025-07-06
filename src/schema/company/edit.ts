@@ -29,10 +29,13 @@ function isValidCNPJ(cnpj: string): boolean {
 export const updateCompanySchema = z.object({
     name: z
         .string({message: "É necessário ter um nome"})
-        .min(2, "Mínimo dois caracteres").optional(),
+        .min(2, "Mínimo dois caracteres")
+        .max(100, "Máximo 100 caracteres")
+        .optional(),
 
     description: z
         .string()
+        .max(400, "Máximo 400 caracteres")
         .optional(),
 
     CNPJ: z

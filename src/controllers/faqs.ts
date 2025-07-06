@@ -3,6 +3,7 @@ import { ExtendedRequest } from "../types/extended-request";
 import { createFAQSchema } from "../schema/faqs/create";
 import { updateFAQSchema } from "../schema/faqs/update";
 import { createFaq, getAllFaqs, updateFaq, deleteFaq, getFaqById } from "../services/faqs";
+import { getCompanyById } from "../services/company";
 
 export const create = async (req: ExtendedRequest, res: Response) => {
     const companyId = req.companyId as string
@@ -10,6 +11,18 @@ export const create = async (req: ExtendedRequest, res: Response) => {
     const data = createFAQSchema.safeParse(req.body)
     if(!data.success){
         res.json({error: data.error.flatten().fieldErrors})
+        return
+    }
+
+    const company = await getCompanyById(companyId)
+    if(!company){
+        res.json({error: "Empresa não encontrada"})
+        return
+    }
+
+    const verify = company.faqs.length >= 15 ? true : false
+    if(verify){
+        res.json({error: "Limite de 15 perguntas frequentes atingido. Exclua uma existente para adicionar uma nova."})
         return
     }
 

@@ -3,11 +3,13 @@ import z from 'zod'
 export const signinSchema = z.object({
     email: z
         .string({message: "É necessário ter um e-mail"})
-        .email("E-mail inválido"),
+        .email("E-mail inválido")
+        .max(100,"E-mail muito longo"),
 
     password: z
         .string({ message: "Senha obrigatória" })
         .min(8, "A senha deve ter no mínimo 8 caracteres")
+        .max(100, "A senha deve ter no máximo 100 caracteres")
         .refine((val) => /[a-z]/.test(val), {
           message: "A senha deve conter pelo menos uma letra minúscula",
         })

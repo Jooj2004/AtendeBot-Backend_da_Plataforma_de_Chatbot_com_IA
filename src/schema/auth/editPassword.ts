@@ -6,6 +6,7 @@ export const editPasswordSchema = z.object({
     actualPass: z
         .string({ message: "Senha obrigatória" })
         .min(8, "A senha deve ter no mínimo 8 caracteres")
+        .max(100, "A antiga senha deve ter no máximo 100 caracteres")
         .refine((val) => /[a-z]/.test(val), {
             message: "A senha deve conter pelo menos uma letra minúscula",
         })
@@ -22,6 +23,7 @@ export const editPasswordSchema = z.object({
     newPass: z
         .string({ message: "Senha obrigatória" })
         .min(8, "A senha deve ter no mínimo 8 caracteres")
+        .max(100, "A nova senha deve ter no máximo 100 caracteres")
         .refine((val) => /[a-z]/.test(val), {
             message: "A senha deve conter pelo menos uma letra minúscula",
         })
