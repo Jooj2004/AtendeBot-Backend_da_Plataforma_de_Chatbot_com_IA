@@ -79,6 +79,11 @@ export const deleteCompany = async (companyId: string) => {
                 companyId
             }
         })
+        const inter = await prisma.interaction.deleteMany({
+            where:{
+                companyId
+            }
+        })
         const company = await prisma.company.delete({
             where:{
                 id: companyId

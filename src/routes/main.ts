@@ -26,6 +26,7 @@ mainRouter.get('/faq/list', verifyJWT, verifyEmail, faqsController.list)
 mainRouter.get('/faq/list/:id', verifyJWT, verifyEmail, faqsController.faq)
 mainRouter.put('/faq/edit', verifyJWT, verifyEmail, faqsController.edit)
 mainRouter.delete('/faq/delete/:id', verifyJWT, verifyEmail, faqsController.deleteFaqCon)
+mainRouter.delete('/faq/deleteall', verifyJWT, verifyEmail, faqsController.deleteAllFaqs)
 
 mainRouter.put('/company/edit', verifyJWT, verifyEmail, companyController.edit)
 mainRouter.put('/company/email', verifyJWT, verifyEmail, companyController.updateEmailCon)

@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
 import { validateQuestion } from "../schema/chatbot/question";
 import { getCompanyById } from "../services/company";
-import { getAllFaqs } from "../services/faqs";
 import { createChatContext, createInteractionServ } from "../services/chatbot";
+import { openai } from "../libs/openai";
 
 export const createInteraction:RequestHandler = async (req, res) => {
     const {id} = req.params 
@@ -23,9 +23,7 @@ export const createInteraction:RequestHandler = async (req, res) => {
         return
     }
 
-    const allFaqsFromTheCompany = await getAllFaqs(company.id)
-
-    const checkQuestionOnFaqs = allFaqsFromTheCompany.find( faq => (
+    const checkQuestionOnFaqs = company.faqs.find( faq => (
         faq.question.toLowerCase().trim() === data.data.question.toLowerCase().trim() 
     ))
 
@@ -41,23 +39,35 @@ export const createInteraction:RequestHandler = async (req, res) => {
         res.json({answer: answer})
         return
     }
-    
-    const context = createChatContext()
 
-// 8. Send the context and question to OpenAI (GPT) to get an answer
+    const context = await createChatContext(company.name, company.email, company.faqs, company.description)
+    if(!context){
+        res.json({error: "Não foi possível gerar o prompt, tente novamente mais tarde"})
+        return
+    }
 
+    try{
+        const chatbot = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                {role: "system", content: context},
+                {role: "user", content: data.data.question}
+            ],
+            max_tokens: 100
+        })
 
+        const answer = chatbot.choices[0].message.content as string
 
-// 9. Get the AI's answer from the response
+        const interaction = await createInteractionServ(data.data.question, answer, company.id)
+        if(!interaction){
+            res.json({error: "Erro interno no servidor. Tente novamente mais tarde"})
+            return
+        }
 
-
-
-// 10. Save the interaction to the database (for history and statistics)
-
-
-
-
-// 11. Send the final answer back to the client
-
-   res.json({data: data.data.question})
+        res.json(answer)
+    }catch(err: any){
+        console.error("Erro completo da OpenAI:", JSON.stringify(err, null, 2));
+        res.json({error: "Erro ao processar a resposta da IA. Tente novamente mais tarde."})
+        return
+    }
 }

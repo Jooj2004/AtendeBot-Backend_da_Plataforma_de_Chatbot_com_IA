@@ -2,7 +2,7 @@ import { Response } from "express";
 import { ExtendedRequest } from "../types/extended-request";
 import { createFAQSchema } from "../schema/faqs/create";
 import { updateFAQSchema } from "../schema/faqs/update";
-import { createFaq, getAllFaqs, updateFaq, deleteFaq, getFaqById } from "../services/faqs";
+import { createFaq, getAllFaqs, updateFaq, deleteFaq, getFaqById, deleteFaqAll} from "../services/faqs";
 import { getCompanyById } from "../services/company";
 
 export const create = async (req: ExtendedRequest, res: Response) => {
@@ -85,4 +85,16 @@ export const deleteFaqCon = async (req: ExtendedRequest, res: Response) => {
     }
 
     res.json({del})
+}
+
+export const deleteAllFaqs = async (req: ExtendedRequest, res: Response) => {
+    const companyId = req.companyId as string
+
+    const delAll = await deleteFaqAll(companyId)
+    if(!delAll){
+        res.json({error: "Não foi possível deletar todos os faqs"})
+        return
+    }
+
+    res.json({delAll})
 }

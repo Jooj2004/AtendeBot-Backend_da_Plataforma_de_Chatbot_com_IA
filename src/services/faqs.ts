@@ -66,3 +66,15 @@ export const deleteFaq = async (id:string, companyId: string) => {
         return false
     }
 }
+
+export const deleteFaqAll = async (companyId: string) => {
+    try{
+        return await prisma.fAQ.deleteMany({
+            where:{
+                companyId
+            }
+        })
+    }catch{
+        return false
+    }
+}
