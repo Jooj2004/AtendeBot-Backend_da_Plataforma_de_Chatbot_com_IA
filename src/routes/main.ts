@@ -4,6 +4,7 @@ import * as authController from '../controllers/auth'
 import * as privateController from '../controllers/private'
 import * as faqsController from '../controllers/faqs'
 import * as companyController from '../controllers/company'
+import * as interectionController from '../controllers/interection'
 import { verifyJWT } from '../libs/jwt'
 import { verifyEmail } from '../middlewares/verifyEmail'
 
@@ -31,6 +32,8 @@ mainRouter.delete('/faq/deleteall', verifyJWT, verifyEmail, faqsController.delet
 mainRouter.put('/company/edit', verifyJWT, verifyEmail, companyController.edit)
 mainRouter.put('/company/email', verifyJWT, verifyEmail, companyController.updateEmailCon)
 mainRouter.delete('/company/delete', verifyJWT, verifyEmail, companyController.deleteAll)
+
+mainRouter.get('/company/interaction', verifyJWT, verifyEmail, interectionController.getInterections)
 
 
 export default mainRouter

@@ -1,8 +1,9 @@
 import { RequestHandler } from "express";
 import { validateQuestion } from "../schema/chatbot/question";
 import { getCompanyById } from "../services/company";
-import { createChatContext, createInteractionServ } from "../services/chatbot";
+import { createChatContext} from "../services/chatbot";
 import { openai } from "../libs/openai";
+import { createInteractionServ } from "../services/interaction";
 
 export const createInteraction:RequestHandler = async (req, res) => {
     const {id} = req.params 

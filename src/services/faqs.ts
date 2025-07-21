@@ -17,10 +17,14 @@ export const getAllFaqs = async (companyId: string) => {
         select:{
             id: true,
             question: true,
-            answer: true
+            answer: true,
+            updateAt: true
         },
         where:{
             companyId
+        },
+        orderBy:{
+            updateAt: 'desc'
         }
     })
     return list
