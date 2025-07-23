@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs"
 import { prisma } from "../libs/prisma"
-import { createCompany, getCompanyByEmail } from "./company"
+import { createCompany, getCompanyByEmail, updateCompany } from "./company"
 
 const company = {
     name: "Empresa Teste",
@@ -35,5 +35,21 @@ describe("Testing services of company.ts", () => {
 
         expect(getCompany?.email).toBe(company.email)
         expect(getCompany?.CNPJ).toBe(company.CNPJ) 
+    })
+
+    it("Should service updateCompany success", async () => {
+        const getCompany = await getCompanyByEmail(company.email)
+
+        const newData = {
+            name: "Novo nome",
+            description: "Nova descrição"
+        }
+
+        const newCompany = await updateCompany(getCompany?.id as string, newData)
+
+        expect(newCompany).toBeDefined()
+        expect(newCompany.id).toBe(getCompany?.id)
+        expect(newCompany.name).not.toBe(company.name)
+        expect(newCompany.name).toBe(newData.name)
     })
 })
