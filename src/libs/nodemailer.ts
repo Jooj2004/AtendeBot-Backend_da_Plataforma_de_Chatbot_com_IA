@@ -143,7 +143,12 @@ export const sendEmail = async (to: string, subject: string, body: string) => {
         await transport.sendMail(message)
         return true
     } catch (err) {
-        console.log('Erro ao enviar e-mail: ', err.response?.data || err.message)
+        if(err instanceof Error){
+            const response = (err as any).response?.data;
+            console.log('Erro ao enviar e-mail:', response || err.message)
+        }else{
+            console.log('Erro desconhecido ao enviar e-mail:', err)
+        }
         return false
     }
 }

@@ -27,7 +27,7 @@ export const signup:RequestHandler = async (req, res) => {
     const {email,name,description,CNPJ} = data.data 
     const newCompany = await createCompany(name, email, CNPJ, hash, description)
 
-    res.status(201).json({sucess: true})
+    res.status(201).json({sucess: true, newCompany})
 }
 
 export const signin:RequestHandler = async (req, res) => {

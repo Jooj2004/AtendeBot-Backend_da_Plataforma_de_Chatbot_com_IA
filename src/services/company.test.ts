@@ -11,9 +11,7 @@ const company = {
 }
 const newEmail = "novoEmail@gmail.com"
 
-describe("Testing services of company.ts", async () => {
-    const getCompany = await getCompanyByEmail(company.email)
-
+describe("Testing services of company.ts", () => {
     beforeAll(async () => {
         await prisma.company.deleteMany()
     })
@@ -34,11 +32,15 @@ describe("Testing services of company.ts", async () => {
     })
 
     it("Should service getCompanyByEmail success", async () => {
+       const getCompany = await getCompanyByEmail(company.email)
+
         expect(getCompany?.email).toBe(company.email)
         expect(getCompany?.CNPJ).toBe(company.CNPJ) 
     })
 
     it("Should service updateCompany success", async () => {
+        const getCompany = await getCompanyByEmail(company.email)
+
         const newData = {
             name: "Novo nome",
             description: "Nova descrição"
@@ -53,6 +55,8 @@ describe("Testing services of company.ts", async () => {
     })
 
     it("Should service updateEmail success", async () => {
+        const getCompany = await getCompanyByEmail(company.email)
+
         const newEmailCompany = await updateEmail(getCompany?.id as string, newEmail)
 
         expect(newEmailCompany).toBeDefined()
@@ -66,7 +70,6 @@ describe("Testing services of company.ts", async () => {
         const newPass = "novaSenha"
 
         const getCompany = await getCompanyByEmail(newEmail)
-        console.log(getCompany?.id)
 
         const hash = await bcrypt.hash(newPass,10)
 
