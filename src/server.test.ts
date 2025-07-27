@@ -2,6 +2,9 @@ import request from 'supertest'
 import app from "./app"
 import { prisma } from './libs/prisma'
 import bcrypt from 'bcryptjs'
+import { createOTP } from './services/otp'
+import { Company} from '@prisma/client'
+import { createJWT } from './libs/jwt'
 
 const company = {
     name: "Empresa Teste",
@@ -17,6 +20,10 @@ describe("Testing api routes", () => {
     })
     
     afterAll(async () => {
+        await prisma.interaction.deleteMany()
+        await prisma.fAQ.deleteMany()
+        await prisma.oTP.deleteMany()
+        await prisma.company.deleteMany()
         await prisma.$disconnect()
     })
 
@@ -84,8 +91,6 @@ describe("Testing api routes", () => {
         })
     })
 
-    const getCompany = async () => await prisma.company.findUnique({where:{email: company.email}})
-
     describe("Testing login route", () => {
         it("Should login successfully with correct credentials", (done) => {
             const { email, password } = company
@@ -132,8 +137,105 @@ describe("Testing api routes", () => {
         })
     })
 
-    describe("", () => {
-        
+    describe("Testing OTPs route", () => {
+        let otpId: string
+        let otpCode: string
+
+        beforeEach(async () => {
+            const company = await prisma.company.findFirst()
+            const otp = await createOTP(company!.id)
+            otpId = otp.id
+            otpCode = otp.code
+        });
+
+        it("Should otp with valid code", (done) => {
+            request(app)
+                .post("/auth/useotp")
+                .send(`id=${otpId}&code=${otpCode}`)
+                .then(async (response) => {
+                    expect(response.body).toHaveProperty("token")
+                    const company = await prisma.company.findFirst()
+                    expect(company?.verification).toBeTruthy()
+                    return done()
+                })
+        })
+        it("Should otp with invalid code", (done) => {
+            request(app)
+                .post("/auth/useotp")
+                .send(`id=${otpId}&code=555555`)
+                .then(async (response) => {
+                    expect(response.body).toHaveProperty("error")
+                    expect(response.body.error).toBe("OTP inválido ou expirado!")
+                    return done()
+                })
+        })
     })
+
+    describe("Testing FAQs routes", () => {
+       let companyEscop: Company
+       let tokenEscop: string
+
+       beforeAll(async ()=>{
+            const company = await prisma.company.findFirst()
+            companyEscop = company as Company
+            const token = await createJWT(company?.id as string, company?.verification as boolean)
+            tokenEscop = token 
+       })
+
+       it("Should create faqs success", (done) => {
+            request(app)
+                .post("/faq/create")
+                .set("Authorization", `Bearer ${tokenEscop}`)
+                .send({
+                    question: "Vocês funcionam aos finais de semana?",
+                    answer: "Sim, abrimos aos sábados das 8h às 14h."
+                }).then(response => {
+                    expect(response.body.success).toBe(true)
+                    expect(response.body.faq).toHaveProperty("id")
+                    expect(response.body.faq.question).toBe("Vocês funcionam aos finais de semana?")
+                    return done() 
+                })
+       })
+       it("Should fail with invalid data (empty question)", (done) => {
+            request(app)
+                .post("/faq/create")
+                .set("Authorization", `Bearer ${tokenEscop}`)
+                .send({
+                    question: "",
+                    answer: "Resposta qualquer"
+                }).then(response => {
+                    expect(response.body).toHaveProperty("error")
+                    expect(response.body.error.question).toBeDefined()
+                    return done()
+                })   
+        })
+
+        it("Should fail if company does not exist", (done) => {
+            const fakeToken = createJWT("id_fake_123", true)
+            request(app)
+                .post("/faq/create")
+                .set("Authorization", `Bearer ${fakeToken}`)
+                .send({
+                    question: "Pergunta qualquer",
+                    answer: "Resposta qualquer"
+                }).then(response => {
+                    expect(response.body).toHaveProperty("error", "Empresa não encontrada")
+                    return done()
+                })
+        })
+    })
+
+    describe("Final Test. THE BOT", () => {
+        ///chat/new/:id
+        it("Should ")
+    })
+
+
+    /* IA
+        ✔️ Sucesso com pergunta válida e contexto completo
+        ✔️ Sucesso com pergunta que já existe nos FAQs
+        ❌ Falha com ID de empresa inexistente
+        ❌ Falha com pergunta inválida (campo vazio, string curta, etc)
+    */
     
 })
