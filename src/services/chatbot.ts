@@ -1,5 +1,4 @@
 import { Prisma } from "@prisma/client"
-import { prisma } from "../libs/prisma"
 
 export const createChatContext = (
     companyName: string,

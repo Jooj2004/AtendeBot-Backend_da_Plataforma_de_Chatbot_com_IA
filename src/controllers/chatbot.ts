@@ -7,9 +7,9 @@ import { createInteractionServ } from "../services/interaction";
 
 export const createInteraction:RequestHandler = async (req, res) => {
     const {id} = req.params 
-        if(!id){
-            res.json({error: "É necessário encaminhar o id da empresa"})
-            return
+    if(!id){
+        res.json({error: "É necessário encaminhar o id da empresa"})
+        return
     }
 
     const company = await getCompanyById(id)

@@ -226,16 +226,49 @@ describe("Testing api routes", () => {
     })
 
     describe("Final Test. THE BOT", () => {
-        ///chat/new/:id
-        it("Should ")
-    })
+        let companyId: string
+        beforeAll(async () => {
+            const company = await prisma.company.findFirst()
+            companyId = company?.id as string
+        })
 
-
-    /* IA
-        ✔️ Sucesso com pergunta válida e contexto completo
-        ✔️ Sucesso com pergunta que já existe nos FAQs
-        ❌ Falha com ID de empresa inexistente
-        ❌ Falha com pergunta inválida (campo vazio, string curta, etc)
-    */
-    
+        it("Should start a new valid conversation with the BOT", (done) => {
+            request(app)
+                .post(`/chat/new/${companyId}`)
+                .send({ question: "Qual o horário de atendimento de sabado?"})
+                .then(response => {
+                    expect(typeof response.text).toBe("string")
+                    expect(response.body.toLowerCase()).toContain('sábado')
+                    return done()
+                })
+        })
+        it("Should start a new valid conversation with exists question", (done) => {
+            request(app)
+                .post(`/chat/new/${companyId}`)
+                .send({ question: "Vocês funcionam aos finais de semana?"})
+                .then(response => {
+                    expect(typeof response.text).toBe("string")
+                    expect(response.body).toHaveProperty('answer','Sim, abrimos aos sábados das 8h às 14h.')
+                    return done()
+                })
+        })
+        it("Should start a invalid conversation", (done) => {
+            request(app)
+                .post('/chat/new/fhgfdgh353673ruieoytry')
+                .send({ question: "Pergunta qualquer"})
+                .then(response => {
+                    expect(response.body).toHaveProperty("error", "Essa empresa não existe no sistema")
+                    return done()
+                })
+        })
+        it("Should start a new valid conversation with invalid question", (done) => {
+            request(app)
+                .post(`/chat/new/${companyId}`)
+                .send({ question: "Oi"})
+                .then(response => {
+                    expect(response.body.error).toHaveProperty("question")
+                    return done()
+                })
+        })
+    })  
 })
