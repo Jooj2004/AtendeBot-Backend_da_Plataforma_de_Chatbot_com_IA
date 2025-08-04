@@ -44,8 +44,7 @@ export const signupSchema = z.object({
 
     CNPJ: z
         .string({message: "É necessário ter um CNPJ"})
-        .min(14, "CNPJ muito curto")
-        .max(18, "CNPJ muito longo")
+        .transform((val) => val.replace(/[^\d]/g, ''))
         .refine(isValidCNPJ, {message: "CNPJ inválido"}),
 
     password: z

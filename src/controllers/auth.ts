@@ -26,6 +26,10 @@ export const signup:RequestHandler = async (req, res) => {
 
     const {email,name,description,CNPJ} = data.data 
     const newCompany = await createCompany(name, email, CNPJ, hash, description)
+    if(!newCompany){
+        res.status(500).json({error: "Erro, Problema interno ou CNPJ já existente"}) 
+        return 
+    }
 
     res.status(201).json({sucess: true, newCompany})
 }
@@ -51,7 +55,7 @@ export const signin:RequestHandler = async (req, res) => {
 
     const token = createJWT(company.id, company.verification)
 
-    res.json({token, company})
+    res.json({token, company}) 
 }
 
 export const verifyEmail:RequestHandler = async (req, res) => {
