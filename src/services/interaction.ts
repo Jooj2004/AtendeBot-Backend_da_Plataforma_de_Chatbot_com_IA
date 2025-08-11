@@ -13,12 +13,6 @@ export const createInteractionServ = async (question: string, botAnswer: string,
 
 export const getAllInterections = async (companyId: string) => {
     const interactions = await prisma.interaction.findMany({
-        select:{
-            question: true,
-            botAnswer: true,
-            createAt: true,
-            id: true
-        },
         where:{
             companyId
         },
