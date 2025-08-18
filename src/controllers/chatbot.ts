@@ -31,7 +31,7 @@ export const createInteraction:RequestHandler = async (req, res) => {
     if(checkQuestionOnFaqs){
         const answer = checkQuestionOnFaqs.answer
 
-        const interaction = createInteractionServ(data.data.question, answer, company.id)
+        const interaction = createInteractionServ(data.data.question, answer, company.id, 2)
         if(!interaction){
             res.json({error: "Erro interno no servidor. Tente novamente mais tarde"})
             return
@@ -59,7 +59,7 @@ export const createInteraction:RequestHandler = async (req, res) => {
 
         const answer = chatbot.choices[0].message.content as string
 
-        const interaction = await createInteractionServ(data.data.question, answer, company.id)
+        const interaction = await createInteractionServ(data.data.question, answer, company.id, 1)
         if(!interaction){
             res.json({error: "Erro interno no servidor. Tente novamente mais tarde"})
             return

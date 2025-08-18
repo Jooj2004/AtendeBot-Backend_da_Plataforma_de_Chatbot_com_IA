@@ -60,6 +60,7 @@ model Interaction {
   botAnswer String
   companyId String
   createAt  DateTime  @default(now())
+  botOrFaq  Int       @default(1)     
 
   company   Company   @relation(fields: [companyId], references: [id])
 }

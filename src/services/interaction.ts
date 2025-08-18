@@ -1,11 +1,12 @@
 import { prisma } from "../libs/prisma"
 
-export const createInteractionServ = async (question: string, botAnswer: string, companyId: string) => {
+export const createInteractionServ = async (question: string, botAnswer: string, companyId: string, botOrFaq: number) => {
     const interaction = await prisma.interaction.create({
         data:{
             question,
             botAnswer,
-            companyId
+            companyId,
+            botOrFaq
         }
     })
     return interaction
