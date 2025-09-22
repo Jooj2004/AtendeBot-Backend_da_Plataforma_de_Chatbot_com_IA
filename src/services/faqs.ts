@@ -30,6 +30,21 @@ export const getAllFaqs = async (companyId: string) => {
     return list
 }
 
+export const getAllQuestions = async (companyId: string) => {
+    const list = await prisma.fAQ.findMany({
+        select:{
+            question: true
+        },
+        where:{
+            companyId
+        },
+        orderBy:{
+            updateAt: 'desc'
+        }
+    })
+    return list
+}
+
 export const getFaqById = async (companyId: string, id: string) => {
     const faq = await prisma.fAQ.findUnique({
         select: {

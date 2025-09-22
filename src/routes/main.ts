@@ -24,6 +24,7 @@ mainRouter.put('/auth/password', verifyJWT, verifyEmail, authController.editPass
 
 mainRouter.post('/faq/create', verifyJWT, verifyEmail, faqsController.create)
 mainRouter.get('/faq/list', verifyJWT, verifyEmail, faqsController.list)
+mainRouter.get('/faq/list/public/:id', faqsController.listPublic)
 mainRouter.get('/faq/list/:id', verifyJWT, verifyEmail, faqsController.faq)
 mainRouter.put('/faq/edit', verifyJWT, verifyEmail, faqsController.edit)
 mainRouter.delete('/faq/delete/:id', verifyJWT, verifyEmail, faqsController.deleteFaqCon)

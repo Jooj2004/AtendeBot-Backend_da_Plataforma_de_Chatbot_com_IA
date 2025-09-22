@@ -65,7 +65,7 @@ export const createInteraction:RequestHandler = async (req, res) => {
             return
         }
 
-        res.json(answer)
+        res.json({answer: answer})
     }catch(err: any){
         console.error("Erro completo da OpenAI:", JSON.stringify(err, null, 2));
         res.json({error: "Erro ao processar a resposta da IA. Tente novamente mais tarde."})

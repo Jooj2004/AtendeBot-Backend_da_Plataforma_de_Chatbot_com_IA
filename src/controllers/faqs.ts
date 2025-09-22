@@ -1,8 +1,8 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { ExtendedRequest } from "../types/extended-request";
 import { createFAQSchema } from "../schema/faqs/create";
 import { updateFAQSchema } from "../schema/faqs/update";
-import { createFaq, getAllFaqs, updateFaq, deleteFaq, getFaqById, deleteFaqAll} from "../services/faqs";
+import { createFaq, getAllFaqs, updateFaq, deleteFaq, getFaqById, deleteFaqAll, getAllQuestions} from "../services/faqs";
 import { getCompanyById } from "../services/company";
 
 export const create = async (req: ExtendedRequest, res: Response) => {
@@ -37,6 +37,14 @@ export const list = async (req: ExtendedRequest, res: Response) => {
     const list = await getAllFaqs(companyId)
 
     res.json({list}) 
+}
+
+export const listPublic = async (req:Request, res:Response) => {
+    const {id} = req.params
+
+    const list = await getAllQuestions(id)
+
+    res.json({list})
 }
 
 export const faq = async (req: ExtendedRequest, res: Response) => {
