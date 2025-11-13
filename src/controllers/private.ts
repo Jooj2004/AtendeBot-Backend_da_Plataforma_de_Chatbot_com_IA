@@ -1,4 +1,4 @@
-import { RequestHandler, Response } from "express";
+import { Response } from "express";
 import { ExtendedRequest } from "../types/extended-request";
 import { getCompanyById } from "../services/company";
 
