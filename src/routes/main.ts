@@ -11,7 +11,7 @@ import { verifyEmail } from '../middlewares/verifyEmail'
 const mainRouter = express.Router() 
 
 mainRouter.get('/ping', pingController.ping) 
-mainRouter.get('/private', verifyJWT, verifyEmail, privateController.test)
+mainRouter.get('/private', verifyJWT, privateController.test)
 
 
 mainRouter.post('/auth/signup', authController.signup)
