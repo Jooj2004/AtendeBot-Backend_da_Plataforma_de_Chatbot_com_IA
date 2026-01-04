@@ -4,7 +4,7 @@ import {signupSchema} from "../schema/auth/signup";
 import { useOTPSchema } from "../schema/auth/useOTP";
 import { createCompany, getCompanyByEmail, getCompanyById, updatePassword } from "../services/company";
 import { createOTP, validateOTP } from "../services/otp";
-import { sendEmail } from "../libs/resend"; //Também há uma função de envio de emails com NODEMAILER
+import { sendEmail } from "../libs/nodemailer"; //Também há uma função de envio de emails com NODEMAILER
 import { createJWT } from "../libs/jwt";
 import bcrypt from "bcryptjs";
 import { editPasswordSchema } from "../schema/auth/editPassword";
